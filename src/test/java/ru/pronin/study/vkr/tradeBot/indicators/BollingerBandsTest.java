@@ -25,7 +25,7 @@ class BollingerBandsTest {
     };
 
     @Test
-    void addCandle() {
+    void addCandle() throws Exception {
         bb.addCandle(createCandle.apply(BigDecimal.valueOf(10L)));
         bb.addCandle(createCandle.apply(BigDecimal.valueOf(15L)));
         bb.addCandle(createCandle.apply(BigDecimal.valueOf(13L)));

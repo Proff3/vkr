@@ -1,7 +1,9 @@
 package ru.pronin.study.vkr.tradeBot.indicators.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class ScalableMap<K extends Comparable<? super K>,V> {
 
@@ -20,7 +22,7 @@ public class ScalableMap<K extends Comparable<? super K>,V> {
     }
 
     public List<V> getValues() {
-        return map.values().stream().toList();
+        return new ArrayList<>(map.values());
     }
 
     public int getSize() {

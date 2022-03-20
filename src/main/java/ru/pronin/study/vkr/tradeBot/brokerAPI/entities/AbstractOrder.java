@@ -1,5 +1,6 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.entities;
 
+import org.springframework.stereotype.Repository;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomOperationType;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomOrderStatus;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomOrderType;

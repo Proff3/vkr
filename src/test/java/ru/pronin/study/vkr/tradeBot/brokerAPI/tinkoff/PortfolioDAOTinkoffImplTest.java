@@ -1,11 +1,13 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.tinkoff;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import ru.pronin.study.vkr.ConfigurationProp;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.BrokerDAO;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomPortfolioPosition;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomOperationType;
@@ -17,17 +19,15 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class PortfolioDAOTinkoffImplTest {
 
-    Logger LOGGER = LoggerFactory.getLogger(PortfolioDAOTinkoffImplTest.class);
+    @Autowired
+    @Qualifier("brokerDAOTinkoffImpl")
     @Spy
-    private BrokerDAO tinkoff = new BrokerDAOTinkoffImpl(
-            true,
-            new InstrumentsDataDAOTinkoffImpl(),
-            new SubscriptionDAOTinkoffImpl(),
-            new TradingDAOTinkoffImpl(),
-            new PortfolioDAOTinkoffImpl());
+    private BrokerDAO tinkoff;
+
+    Logger LOGGER = LoggerFactory.getLogger(PortfolioDAOTinkoffImplTest.class);
 
     Function<String, Integer> countPositionsForFigi = (figi) -> tinkoff
             .getPortfolioDAO()

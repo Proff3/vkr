@@ -1,13 +1,13 @@
 package ru.pronin.study.vkr;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class VkrApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//@SpringBootTest
+//class VkrApplicationTests {
+//
+//	@Test
+//	void contextLoads() {
+//	}
+//
+//}

@@ -1,5 +1,9 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.tinkoff;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import ru.pronin.study.vkr.ConfigurationProp;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.*;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.exceptions.OrdersContextInitializationException;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.exceptions.PortfolioInitializationException;
@@ -11,52 +15,57 @@ import ru.tinkoff.invest.openapi.okhttp.OkHttpOpenApi;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-public class BrokerDAOTinkoffImpl extends BrokerDAO {
+@Service
+public class BrokerDAOTinkoffImpl implements BrokerDAO {
 
-    public MarketContext MARKET;
-    public SandboxContext SANDBOX;
-    public OrdersContext ORDERS;
-    public PortfolioContext PORTFOLIO;
-    public StreamingContext STREAM;
+    private String tinkoffToken;
     private String accountID;
-    private final InstrumentsDataDAO instrumentsDataDAO = new InstrumentsDataDAOTinkoffImpl();
-    private final SubscriptionDAO subscriptionDAO = new SubscriptionDAOTinkoffImpl();
-    private final TradingDAO tradingDAO = new TradingDAOTinkoffImpl();
-    private final PortfolioDAO portfolioDAO = new PortfolioDAOTinkoffImpl();
+    private final InstrumentsDataDAOTinkoffImpl instrumentsDataDAO;
+    private final SubscriptionDAOTinkoffImpl subscriptionDAO;
+    private final TradingDAOTinkoffImpl tradingDAO;
+    private final PortfolioDAOTinkoffImpl portfolioDAO;
+    private final ConfigurationProp properties;
 
-
-    public BrokerDAOTinkoffImpl(Boolean sandboxMode,
-                                InstrumentsDataDAOTinkoffImpl instrumentsDataDAO,
+    @Autowired
+    public BrokerDAOTinkoffImpl(InstrumentsDataDAOTinkoffImpl instrumentsDataDAO,
                                 SubscriptionDAOTinkoffImpl subscriptionDAO,
                                 TradingDAOTinkoffImpl tradingDAO,
-                                PortfolioDAOTinkoffImpl portfolioDAO) {
-        super(instrumentsDataDAO, subscriptionDAO, tradingDAO, portfolioDAO);
-        OpenApi api = new OkHttpOpenApi(getToken(), sandboxMode);
-        SANDBOX = api.getSandboxContext();
-        MARKET = api.getMarketContext();
-        ORDERS = api.getOrdersContext();
-        PORTFOLIO = api.getPortfolioContext();
-        STREAM = api.getStreamingContext();
-        instrumentsDataDAO.setMARKET(MARKET);
+                                PortfolioDAOTinkoffImpl portfolioDAO,
+                                ConfigurationProp properties) {
+        this.instrumentsDataDAO = instrumentsDataDAO;
+        this.subscriptionDAO = subscriptionDAO;
+        this.tradingDAO = tradingDAO;
+        this.portfolioDAO = portfolioDAO;
+        this.properties = properties;
+    }
+
+    public BrokerDAO init(boolean sandboxMode) {
+        tinkoffToken = properties.getTinkoffToken();
+        System.out.println(tinkoffToken + "token");
+        OpenApi api = new OkHttpOpenApi(tinkoffToken, sandboxMode);
+        instrumentsDataDAO.setMARKET(api.getMarketContext());
         SandboxRegisterRequest registerRequest = new SandboxRegisterRequest();
         registerRequest.setBrokerAccountType(BrokerAccountType.TINKOFF);
         try {
             if (sandboxMode) {
-                accountID = SANDBOX.performRegistration(registerRequest).join().getBrokerAccountId();
+                accountID = api.getSandboxContext()
+                        .performRegistration(registerRequest)
+                        .join()
+                        .getBrokerAccountId();
                 SandboxSetCurrencyBalanceRequest balanceRequest = new SandboxSetCurrencyBalanceRequest();
                 balanceRequest.setBalance(BigDecimal.valueOf(100_000));
                 balanceRequest.setCurrency(SandboxCurrency.USD);
-                SANDBOX.setCurrencyBalance(balanceRequest, accountID).get();
+                api.getSandboxContext().setCurrencyBalance(balanceRequest, accountID).get();
             } else {
                 //Плохой код
                 accountID = api.getUserContext().getAccounts().get().getAccounts().get(0).getBrokerAccountId();
             }
-            subscriptionDAO.setSTREAM(STREAM);
-            tradingDAO.setORDERS(ORDERS);
-            portfolioDAO.setPORTFOLIO(PORTFOLIO);
+            subscriptionDAO.setSTREAM(api.getStreamingContext());
+            tradingDAO.setORDERS(api.getOrdersContext());
+            portfolioDAO.setPORTFOLIO(api.getPortfolioContext());
         } catch (StreamInitializationException |
                 ExecutionException |
                 InterruptedException |
@@ -66,6 +75,27 @@ public class BrokerDAOTinkoffImpl extends BrokerDAO {
         }
         tradingDAO.setBrokerAccountID(accountID);
         portfolioDAO.setBrokerAccountID(accountID);
+        return this;
+    }
+
+    @Override
+    public SubscriptionDAOTinkoffImpl getSubscriptionDAO() {
+        return subscriptionDAO;
+    }
+
+    @Override
+    public TradingDAOTinkoffImpl getTradingDAO() {
+        return tradingDAO;
+    }
+
+    @Override
+    public InstrumentsDataDAO getInstrumentDAO() {
+        return instrumentsDataDAO;
+    }
+
+    @Override
+    public PortfolioDAOTinkoffImpl getPortfolioDAO() {
+        return portfolioDAO;
     }
 
     private String getToken() {

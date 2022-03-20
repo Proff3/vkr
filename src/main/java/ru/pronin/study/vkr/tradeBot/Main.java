@@ -1,5 +1,6 @@
 package ru.pronin.study.vkr.tradeBot;
 
+import ru.pronin.study.vkr.ConfigurationProp;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.BrokerDAO;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomCandle;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomCandleResolution;
@@ -20,13 +21,17 @@ public class Main {
         StochasticOscillator so = new StochasticOscillator(14, 5, 2);
         BollingerBands bb = new BollingerBands(20, 2);
         SMA sma = new SMA(15);
+        ConfigurationProp prop = new ConfigurationProp();
+        prop.setTinkoffToken("token");
         BrokerDAO broker = new BrokerDAOTinkoffImpl(
-                true,
                 new InstrumentsDataDAOTinkoffImpl(),
                 new SubscriptionDAOTinkoffImpl(),
                 new TradingDAOTinkoffImpl(),
-                new PortfolioDAOTinkoffImpl());
-        List<CustomCandle> candles = broker.getInstrumentsDataDAO().getRequiredNumberOfCandles(false, figiStocks.get(1), 100, CustomCandleResolution._5MIN);
+                new PortfolioDAOTinkoffImpl(),
+                prop)
+                .init(true);
+        System.out.println(broker.getInstrumentDAO().getAllInstruments().get(0));
+        List<CustomCandle> candles = broker.getInstrumentDAO().getRequiredNumberOfCandles(false, figiStocks.get(1), 100, CustomCandleResolution._5MIN);
         candles.forEach(c -> {
             so.addCandle(c);
             bb.addCandle(c);

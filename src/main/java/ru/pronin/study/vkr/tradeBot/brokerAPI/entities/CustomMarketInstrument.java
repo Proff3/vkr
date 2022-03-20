@@ -1,5 +1,6 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.entities;
 
+import org.springframework.stereotype.Repository;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomCurrency;
 
 public class CustomMarketInstrument {

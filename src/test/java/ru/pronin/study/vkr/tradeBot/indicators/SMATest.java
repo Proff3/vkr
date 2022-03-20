@@ -29,6 +29,6 @@ class SMATest {
         sma.addCandle(createCandle.apply(new BigDecimal(30)));
         sma.addCandle(createCandle.apply(new BigDecimal(40)));
         sma.addCandle(createCandle.apply(new BigDecimal(50)));
-        assertEquals(new BigDecimal(30).setScale(4, RoundingMode.HALF_UP), sma.getCurrentValue());
+        assertEquals(new BigDecimal(30).setScale(4, RoundingMode.HALF_UP), sma.getCurrentValue().getValue());
     }
 }

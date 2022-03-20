@@ -1,5 +1,8 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.tinkoff;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.PortfolioDAO;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomMoneyAmount;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomPortfolio;
@@ -12,6 +15,7 @@ import ru.tinkoff.invest.openapi.model.rest.*;
 
 import java.util.stream.Collectors;
 
+@Service
 public class PortfolioDAOTinkoffImpl implements PortfolioDAO {
 
     private String brokerAccountID;

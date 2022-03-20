@@ -1,5 +1,6 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.entities;
 
+import org.springframework.stereotype.Repository;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomCandleResolution;
 
 import java.math.BigDecimal;
@@ -171,8 +172,9 @@ public class CustomCandle {
     @Override
     public boolean equals(Object o1) {
         if (this == o1) return true;
-        if (!(o1 instanceof CustomCandle that)) return false;
-        return getV().equals(that.getV()) && getTime().equals(that.getTime()) && getFigi().equals(that.getFigi()) && getInterval() == that.getInterval() && getO().equals(that.getO()) && getC().equals(that.getC()) && getH().equals(that.getH()) && getL().equals(that.getL());
+        if (!(o1 instanceof CustomCandle)) return false;
+        CustomCandle that = (CustomCandle) o1;
+        return Objects.equals(getV(), that.getV()) && Objects.equals(getTime(), that.getTime()) && Objects.equals(getFigi(), that.getFigi()) && getInterval() == that.getInterval() && Objects.equals(getO(), that.getO()) && Objects.equals(getC(), that.getC()) && Objects.equals(getH(), that.getH()) && Objects.equals(getL(), that.getL());
     }
 
     @Override

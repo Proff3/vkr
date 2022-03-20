@@ -28,13 +28,13 @@ public class StrategyTest implements Runnable {
     @Override
     public void run() {
         Map<String, List<CustomCandle>> candlesMap = new HashMap<>();
-        List<CustomMarketInstrument> instruments = broker.getInstrumentsDataDAO().getAllInstruments();
+        List<CustomMarketInstrument> instruments = broker.getInstrumentDAO().getAllInstruments();
         instruments.forEach(instrument -> {
             String figi = instrument.getFigi();
             List<CustomCandle> middlewareCandles = new ArrayList<>();
             try {
                 middlewareCandles =
-                        broker.getInstrumentsDataDAO().getCandlesFromDateTime(false, figi, startDate, resolution);
+                        broker.getInstrumentDAO().getCandlesFromDateTime(false, figi, startDate, resolution);
             } catch (Exception e) {
                 e.printStackTrace();
             }

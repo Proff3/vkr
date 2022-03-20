@@ -1,5 +1,6 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.tinkoff;
 
+import org.springframework.stereotype.Service;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.TradingDAO;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomMoneyAmount;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomOrder;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+@Service
 public class TradingDAOTinkoffImpl implements TradingDAO {
 
     private OrdersContext ORDERS;
@@ -91,7 +93,7 @@ public class TradingDAOTinkoffImpl implements TradingDAO {
     }
 
     @Override
-    public List<CustomOrder> getOrders() throws ExecutionException, InterruptedException {
+    public List<CustomOrder> getOrders() {
         List<Order> orders = ORDERS.getOrders(brokerAccountID).join();
         System.out.println("orders " + orders);
         return orders.stream().map(tinkoffOrder -> new CustomOrder(

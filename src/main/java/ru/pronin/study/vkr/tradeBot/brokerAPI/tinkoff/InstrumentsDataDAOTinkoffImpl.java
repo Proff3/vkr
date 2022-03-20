@@ -1,5 +1,6 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.tinkoff;
 
+import org.springframework.stereotype.Service;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.InstrumentsDataDAO;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomCandle;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.entities.CustomMarketInstrument;
@@ -20,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@Service
 public class InstrumentsDataDAOTinkoffImpl implements InstrumentsDataDAO {
 
     private final Logger LOGGER = Logger.getLogger(InstrumentsDataDAOTinkoffImpl.class.toString());
@@ -120,7 +122,7 @@ public class InstrumentsDataDAOTinkoffImpl implements InstrumentsDataDAO {
     }
 
     private static CustomCandle tinkoffCandleToCustom(Candle candle){
-        CustomCandleResolution resolution = CustomCandleResolution.fromValue(candle.getInterval().getValue());
+        CustomCandleResolution resolution = CustomCandleResolution.getResolution(candle.getInterval().getValue());
         return new CustomCandle(
                 candle.getFigi(),
                 resolution,
@@ -172,9 +174,9 @@ public class InstrumentsDataDAOTinkoffImpl implements InstrumentsDataDAO {
     }
 
     private boolean isUSASession(Candle candle) {
-        OffsetDateTime time = candle.getTime();
+        OffsetDateTime time = candle.getTime().minusHours(5);
         int hours = time.getHour();
         int minutes = time.getMinute();
-        return (hours >= 16 && minutes >= 30) && (hours < 22);
+        return ((hours >= 9 && minutes >= 30) || hours >= 10) && (hours < 17);
     }
 }

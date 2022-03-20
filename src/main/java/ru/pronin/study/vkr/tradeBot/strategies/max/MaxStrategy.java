@@ -12,14 +12,14 @@ public class MaxStrategy implements Strategy {
 
     private final List<Indicator> indicators;
 
-    public MaxStrategy(int stochasticDepth, int stochasticEmaDepth, int bollingerDepth, int bollingerMultiplier) {
+    public MaxStrategy(int stochasticDepth, int stochasticEmaDepth, int bollingerDepth, int bollingerMultiplier) throws Exception {
         this.indicators = List.of(
                 new StochasticOscillator(stochasticDepth, stochasticEmaDepth),
                 new BollingerBands(bollingerDepth, bollingerMultiplier)
         );
     }
 
-    public MaxStrategy(int stochasticDepth, int stochasticEmaDepth, int stochasticSmooth, int bollingerDepth, int bollingerMultiplier) {
+    public MaxStrategy(int stochasticDepth, int stochasticEmaDepth, int stochasticSmooth, int bollingerDepth, int bollingerMultiplier) throws Exception {
         this.indicators = List.of(
                 new StochasticOscillator(stochasticDepth, stochasticEmaDepth, stochasticSmooth),
                 new BollingerBands(bollingerDepth, bollingerMultiplier)

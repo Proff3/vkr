@@ -1,5 +1,8 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.tinkoff;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.SubscriptionDAO;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.enums.CustomCandleResolution;
 import ru.pronin.study.vkr.tradeBot.brokerAPI.exceptions.EventHandlerNotInitializeException;
@@ -11,6 +14,7 @@ import ru.tinkoff.invest.openapi.model.streaming.StreamingRequest;
 
 import java.util.function.Function;
 
+@Service
 public class SubscriptionDAOTinkoffImpl implements SubscriptionDAO {
 
     private Boolean isSubscribeSet;

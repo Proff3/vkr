@@ -1,8 +1,5 @@
 package ru.pronin.study.vkr.tradeBot.brokerAPI.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum CustomCandleResolution {
     _1MIN("1min"),
     _2MIN("2min"),
@@ -31,9 +28,9 @@ public enum CustomCandleResolution {
         return String.valueOf(value);
     }
 
-    public static CustomCandleResolution fromValue(String text) {
+    public static CustomCandleResolution getResolution(String text) {
         for (CustomCandleResolution b : CustomCandleResolution.values()) {
-            if (String.valueOf(b.value).equals(text)) {
+            if (String.valueOf(b.value).equalsIgnoreCase(text)) {
                 return b;
             }
         }

@@ -1,12 +1,31 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-access-token')
+    }
+
     stages {
-        stage('create docker image') {
+        stage('build') {
             steps {
                 sh 'mvn package -DskipTests'
                 sh 'docker build -t pron9/vkr .'
             }
+        }
+        stage('login') {
+              steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+              }
+            }
+        stage('Push') {
+            steps {
+                sh 'docker push pron9/vkr'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }

@@ -81,4 +81,9 @@ public class TinkoffBrokerController {
     public void cancelOrder(@RequestParam String orderID) {
         broker.getTradingDAO().cancelOrder(orderID);
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 }

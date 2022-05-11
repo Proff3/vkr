@@ -5,7 +5,7 @@ pipeline {
         stage('create docker image') {
             steps {
                 sh 'mvn package -DskipTests'
-                sh 'pws'
+                sh 'pwd'
                 sh 'docker build .'
             }
         }

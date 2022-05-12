@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Run') {
             steps {
-                sh "ssh root@84.252.138.1 'docker pull pron9/vkr | docker run -d -p 8080:8080 --name vkr --env prop.tinkoffToken=$tinkoff-token pron9/vkr'"
+                sh "ssh root@84.252.138.1 'docker pull pron9/vkr && docker run -d -p 8080:8080 --name vkr --env prop.tinkoffToken=$tinkoff-token pron9/vkr'"
             }
         }
     }

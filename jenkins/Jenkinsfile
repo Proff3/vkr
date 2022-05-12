@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-access-token')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-access-token'),
+        TINKOFF_TOKEN = credentials('tinkoff-token')
     }
 
     stages {
@@ -24,13 +25,9 @@ pipeline {
         }
         stage('Run') {
             steps {
-                script {
-                    withCredentials([string(credentialsId: 'tinkoff-token', variable: 'TOKEN')]) {
-                        sh "ssh root@84.252.138.1 'docker stop vkr && docker rm vkr'"
-                        sh "ssh root@84.252.138.1 'docker pull pron9/vkr'"
-                        sh "ssh root@84.252.138.1 'docker run -d -p 8080:8080 --name vkr --env prop.tinkoffToken=$TOKEN pron9/vkr'"
-                    }
-                }
+                sh "ssh root@84.252.138.1 'docker stop vkr && docker rm vkr'"
+                sh "ssh root@84.252.138.1 'docker pull pron9/vkr'"
+                sh "ssh root@84.252.138.1 'docker run -d -p 8080:8080 --name vkr --env prop.tinkoffToken=$TINKOFF_TOKEN pron9/vkr'"
             }
         }
     }

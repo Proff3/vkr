@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-access-token'),
+        TINKOFF_TOKEN = credentials('tinkoff-token')
+    }
+
+    stages {
+        stage('build') {
+            steps {
+                sh 'mvn package -DskipTests'
+                sh 'docker build -t pron9/vkr .'
+            }
+        }
+        stage('login') {
+              steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+              }
+            }
+        stage('Push') {
+            steps {
+                sh 'docker push pron9/vkr'
+            }
+        }
+        stage('Run') {
+            steps {
+                sh "ssh root@84.252.138.1 'docker stop vkr && docker rm vkr'"
+                sh "ssh root@84.252.138.1 'docker pull pron9/vkr'"
+                sh "ssh root@84.252.138.1 'docker run -d -p 8080:8080 --name vkr --env prop.tinkoffToken=$TINKOFF_TOKEN pron9/vkr'"
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }
+}
